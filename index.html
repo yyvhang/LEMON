@@ -1,0 +1,848 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="utf-8">
+    <meta name="description"
+    content="Learning 3D Human-Object Interaction Relation from 2D Images.">
+    <meta name="keywords" content="Human-Object Interaction, 3D Interaction">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>LEMON: Learning 3D Human-Object Interaction Relation from 2D Images</title>
+
+    <!-- Global site tag (gtag.js) - Google Analytics -->
+    <link href="https://fonts.googleapis.com/css?family=Google+Sans|Noto+Sans|Castoro" rel="stylesheet">
+
+    <link rel="stylesheet" href="./static/css/bulma.min.css">
+    <link rel="stylesheet" href="./static/css/bulma-carousel.min.css">
+    <link rel="stylesheet" href="./static/css/bulma-slider.min.css">
+    <link rel="stylesheet" href="./static/css/fontawesome.all.min.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/jpswalsh/academicons@1/css/academicons.min.css">
+    <link rel="stylesheet" href="./static/css/index.css">
+
+    <style>
+        .overline {
+            text-decoration: overline;
+        }
+        h2 {
+            text-align: center;
+        }
+        p {
+            text-align: justify;
+        }
+        .render_wrapper_small {
+			      position: relative;
+            height: 200px;
+         }
+         .render_wrapper {
+            position: relative;
+            max-height: 400px;
+            height: auto;
+            width: auto;
+        }
+        .render_wrapper_relative {
+            position: relative;
+            max-height: 300px;
+            max-width: 300px;
+            height: auto;
+            width: auto;
+        }
+        .render_div {
+            position: absolute;
+            top: 0;
+            left: 0;
+        }
+        #interpolation-image-wrapper-car{
+            text-align: center;
+        }
+        #interpolation-image-wrapper-chair{
+            text-align: center;
+        }
+        .nested-columns {
+            margin-bottom: 0 !important;
+        }
+    </style>
+
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <script defer src="./static/js/fontawesome.all.min.js"></script>
+    <script src="./static/js/bulma-carousel.min.js"></script>
+    <script src="./static/js/bulma-slider.min.js"></script>
+    <script src="./static/js/index.js"></script>
+</head>
+
+<body>
+
+    <nav class="navbar" role="navigation" aria-label="main navigation">
+        <div class="navbar-brand">
+          <a role="button" class="navbar-burger" aria-label="menu" aria-expanded="false">
+            <span aria-hidden="true"></span>
+            <span aria-hidden="true"></span>
+            <span aria-hidden="true"></span>
+          </a>
+        </div>
+        <div class="navbar-menu">
+          <div class="navbar-start" style="flex-grow: 1; justify-content: center;">
+            <a class="navbar-item" href="">
+            <span class="icon">
+                <i class="fas fa-home"></i>
+            </span>
+            </a>
+      
+            <div class="navbar-item has-dropdown is-hoverable">
+              <a class="navbar-link">
+                More Research
+              </a>
+              <div class="navbar-dropdown">
+                <a class="navbar-item" href="https://yyvhang.github.io/publications/IAG/index.html">
+                  IAG-Net
+                </a>
+                <a class="navbar-item" href="https://github.com/lhc1224/OSAD_Net"> 
+                  OSAD-Net
+                </a>
+                <a class="navbar-item" href="https://github.com/lhc1224/Cross-View-AG"> 
+                  Cross-View-AG
+                </a>
+                <a class="navbar-item" href="https://openaccess.thecvf.com/content/CVPR2023/papers/Luo_Leverage_Interactive_Affinity_for_Affordance_Learning_CVPR_2023_paper.pdf"> 
+                  PIAL
+                </a>
+              </div>
+            </div>
+          </div>
+      
+        </div>
+    </nav>
+
+    <section class="hero">
+        <div class="hero-body">
+          <div class="container is-max-desktop">
+            <div class="columns is-centered">
+              <div class="column has-text-centered">
+                <h1 class="title is-1 publication-title">LEMON: Learning 3D Human-Object Interaction Relation from 2D Images</h1>
+                <div class="is-size-5 publication-authors">
+                  <span class="author-block">
+                    <a href="https://yyvhang.github.io">Yuhang Yang</a><sup>1</sup>,</span>
+                  <span class="author-block">
+                    <a href="">Wei Zhai</a><sup>1</sup>,</span>
+                  <span class="author-block">
+                    <a href="">Hongchen Luo</a><sup>1</sup>,
+                  </span>
+                  <span class="author-block">
+                    <a href="">Yang Cao</a><sup>1</sup>,
+                  </span>
+                  <span class="author-block">
+                    <a href="">Zheng-Jun Zha</a><sup>1</sup>,
+                  </span>
+                </div>
+      
+                <div class="is-size-5 publication-authors">
+                  <span class="author-block"><sup>1</sup>University of Science and Technology of China</span>
+                </div>
+      
+                <div class="column has-text-centered">
+                  <div class="publication-links">
+                    <!-- PDF Link. -->
+                    <span class="link-block">
+                      <a href=""
+                         class="external-link button is-normal is-rounded is-dark">
+                        <span class="icon">
+                            <i class="ai ai-arxiv"></i>
+                        </span>
+                        <span>arXiv</span>
+                      </a>
+                    </span>
+                    <!-- Video Link. -->
+                    <!-- <span class="link-block">
+                      <a href=""
+                         class="external-link button is-normal is-rounded is-dark">
+                        <span class="icon">
+                            <i class="fab fa-youtube"></i>
+                        </span>
+                        <span>Video</span>
+                      </a>
+                    </span> -->
+                    <!-- Code Link. -->
+                    <span class="link-block">
+                      <a href=""
+                         class="external-link button is-normal is-rounded is-dark">
+                        <span class="icon">
+                            <i class="fab fa-github"></i>
+                        </span>
+                        <span>Code</span>
+                        </a>
+                    </span>
+                    <!-- Dataset Link. -->
+                    <span class="link-block">
+                      <a href=""
+                         class="external-link button is-normal is-rounded is-dark">
+                        <span class="icon">
+                            <i class="far fa-images"></i>
+                        </span>
+                        <span>Data coming soon</span>
+                        </a>
+                  </div>
+      
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+    </section>
+
+    <section class="hero teaser">
+        <div class="container is-max-desktop">
+            <div class="hero-body">
+                <img src="./static/images/teaser.png" height="200%" />
+                  <p>
+                  For an interaction image with paired geometries of the human and object, <b>LEMON</b> learns 3D human-object interaction relation
+                  by jointly anticipating the interaction elements, including human contact, object affordance, and human-object spatial relation. Vertices in
+                  <span style="color: rgb(224.4,209.1,91.8);">yellow</span> denote those in contact with the object, regions in <span style="color: rgb(255, 0, 0);">red</span> are object affordance regions, and the <span style="color: rgb(191.0,188.0,176.0);">translucent sphere</span> is the object proxy.
+                  </p>
+            </div>
+        </div>
+    </section>
+
+    <section class="hero is-light is-small">
+        <div class="hero-body">
+            <div class="container">
+                <div id="results-carousel" class="carousel results-carousel">
+                    <div class="outer-div">
+                        <div class="item item-steve render_wrapper_relative">
+                          <img
+                            src="./static/images/R_skateboard1.png"
+                          />
+                        </div>
+                    </div>
+                  <div class="outer-div">
+                    <div class="item item-steve render_wrapper_relative">
+                      <img
+                        src="./static/images/R_skateboard2.png"
+                      />
+                    </div>
+                  </div>
+                  <div class="outer-div">
+                    <div class="item item-steve render_wrapper_relative">
+                      <img
+                        src="./static/images/R_bottle1.png"
+                      />
+                    </div>
+                  </div>
+                  <div class="outer-div">
+                    <div class="item item-steve render_wrapper_relative">
+                      <img
+                        src="./static/images/R_bottle2.png"
+                      />
+                    </div>
+                  </div>
+                  <div class="outer-div">
+                    <div class="item item-steve render_wrapper_relative">
+                      <img
+                        src="./static/images/R_Tennis1.png"
+                      />
+                    </div>
+                  </div>
+                  <div class="outer-div">
+                    <div class="item item-steve render_wrapper_relative">
+                      <img
+                        src="./static/images/R_Tennis2.png"
+                      />
+                    </div>
+                  </div>
+                  <div class="outer-div">
+                    <div class="item item-steve render_wrapper_relative">
+                      <img
+                        src="./static/images/R_motor1.png"
+                      />
+                    </div>
+                  </div>
+                  <div class="outer-div">
+                    <div class="item item-steve render_wrapper_relative">
+                      <img
+                        src="./static/images/R_motor2.png"
+                      />
+                    </div>
+                  </div>
+                  <div class="outer-div">
+                    <div class="item item-steve render_wrapper_relative">
+                      <img
+                        src="./static/images/R_bowl1.png"
+                      />
+                    </div>
+                  </div>
+                  <div class="outer-div">
+                    <div class="item item-steve render_wrapper_relative">
+                      <img
+                        src="./static/images/R_bowl2.png"
+                      />
+                    </div>
+                  </div>
+                  <div class="outer-div">
+                    <div class="item item-steve render_wrapper_relative">
+                      <img
+                        src="./static/images/R_mug1_1.png"
+                      />
+                    </div>
+                  </div>
+                  <div class="outer-div">
+                    <div class="item item-steve render_wrapper_relative">
+                      <img
+                        src="./static/images/R_mug1_2.png"
+                      />
+                    </div>
+                  </div>
+                  <div class="outer-div">
+                    <div class="item item-steve render_wrapper_relative">
+                      <img
+                        src="./static/images/R_mug2_1.png"
+                      />
+                    </div>
+                  </div>
+                  <div class="outer-div">
+                    <div class="item item-steve render_wrapper_relative">
+                      <img
+                        src="./static/images/R_mug2_2.png"
+                      />
+                    </div>
+                  </div>
+                  <div class="outer-div">
+                    <div class="item item-steve render_wrapper_relative">
+                      <img
+                        src="./static/images/R_bed1.png"
+                      />
+                    </div>
+                  </div>
+                  <div class="outer-div">
+                    <div class="item item-steve render_wrapper_relative">
+                      <img
+                        src="./static/images/R_bed2.png"
+                      />
+                    </div>
+                  </div>
+                  <div class="outer-div">
+                    <div class="item item-steve render_wrapper_relative">
+                      <img
+                        src="./static/images/R_scissors1.png"
+                      />
+                    </div>
+                  </div>
+                  <div class="outer-div">
+                    <div class="item item-steve render_wrapper_relative">
+                      <img
+                        src="./static/images/R_scissors2.png"
+                      />
+                    </div>
+                  </div>
+                </div>
+                <div style="text-align: center;">Interaction elements inferred by LEMON. Including human <span style="color: rgb(224.4,209.1,91.8);">contact</span>, object <span style="color: rgb(255, 0, 0);">affordance</span>, and two views of human-object spatial relation, the <span style="color: rgb(191.0,188.0,176.0);">translucent sphere</span> is the object proxy.</div>
+            </div>
+        </div>
+    </section>
+
+    <section class="hero is-light is-small">
+        <div class="hero-body">
+            <div class="container">
+                <div id="results-carousel" class="carousel results-carousel">
+                    <div class="item item-chair">
+                        <video poster="" id="chair" autoplay controls muted loop playsinline height="100%">
+                            <source src="./static/videos/chair.mp4"
+                                    type="video/mp4">
+                        </video>
+                        <img src="./static/images/Chair_sit.png" height="20%" />
+                    </div>
+                    <div class="item item-Surfboard-support">
+                        <img src="./static/images/Surfboard_support.png" height="20%" />
+                        <video poster="" id="Surfboard-support" autoplay controls muted loop playsinline height="100%">
+                            <source src="./static/videos/surfboard_support.mp4"
+                                    type="video/mp4">
+                        </video>
+                    </div>
+                    <div class="item item-Surfboard-carry">
+                        <video poster="" id="Surfboard-carry" autoplay controls muted loop playsinline height="100%">
+                            <source src="./static/videos/surfboard_carry.mp4"
+                                    type="video/mp4">
+                        </video>
+                        <img src="./static/images/Surfboard_carry.png" height="20%" />
+                    </div>
+                    <div class="item item-Earphone">
+                        <img src="./static/images/Earphone_wear.png" height="20%" />
+                        <video poster="" id="Earphone" autoplay controls muted loop playsinline height="100%">
+                            <source src="./static/videos/earphone.mp4"
+                                    type="video/mp4">
+                        </video>
+                    </div>
+                    <div class="item item-Bag">
+                        <video poster="" id="Bag" autoplay controls muted loop playsinline height="100%">
+                            <source src="./static/videos/Bag.mp4"
+                                    type="video/mp4">
+                        </video>
+                        <img src="./static/images/Bag_lift.png" height="20%" />
+                    </div>
+                    <div class="item item-Knife">
+                        <img src="./static/images/Knife_grasp.png" height="20%" />
+                        <video poster="" id="Knife" autoplay controls muted loop playsinline height="100%">
+                            <source src="./static/videos/knife.mp4"
+                                    type="video/mp4">
+                        </video>
+                    </div>
+                </div>
+                <div style="text-align: center;">The interaction elemnts inferred by LEMON possess the potential to facilitate applications like interaction modeling. </div>
+            </div>
+        </div>
+    </section>
+
+
+    <section class="section">
+        <div class="container is-max-desktop">
+          <!-- Abstract. -->
+          <div class="columns is-centered has-text-centered">
+            <div class="column is-four-fifths">
+              <h2 class="title is-3">Abstract</h2>
+              <div class="content has-text-justified">
+                <p>
+                  Learning 3D human-object interaction relation is pivotal to embodied AI and interaction modeling. Most existing methods approach the goal 
+                  by learning to predict isolated interaction elements, e.g., human contact, object affordance, and human-object spatial relation, primarily 
+                  from the perspective of either the human or the object. Which underexploit certain correlations between the interaction counterparts 
+                  (human and object), and struggle to address the uncertainty in interactions. Actually, objects' functionalities potentially affect humans' 
+                  interaction intentions, which reveals what the interaction is. Meanwhile, the interacting humans and objects exhibit matching geometric 
+                  structures, which presents how to interact. In light of this, we propose harnessing these inherent correlations between interaction 
+                  counterparts to mitigate the uncertainty and jointly anticipate the above interaction elements in 3D space. To achieve this, we present <b>LEMON</b>
+                  (<b>L</b>earning 3D hu<b>M</b>an-<b>O</b>bject i<b>N</b>teraction relation), a unified model that mines interaction intentions of the counterparts and 
+                  employs curvatures to guide the extraction of geometric correlations, combining them to anticipate the interaction elements. Besides, the <b>3D</b>
+                  <b>I</b>nteraction <b>R</b>elation dataset <b>(3DIR)</b> is collected to serve as the test bed for training and evaluation. Extensive experiments 
+                  demonstrate the superiority of LEMON over methods estimating each element in isolation.
+                </p>
+              </div>
+            </div>
+          </div>
+          <!--/ Abstract. -->
+      
+          <!-- Paper video. -->
+          <!-- <div class="columns is-centered has-text-centered">
+            <div class="column is-four-fifths">
+              <h2 class="title is-3">Video</h2>
+              <div class="publication-video">
+                <iframe src="https://www.youtube.com/embed/MrKrnHhk8IA?rel=0&amp;showinfo=0"
+                        frameborder="0" allow="autoplay; encrypted-media" allowfullscreen></iframe>
+              </div>
+            </div>
+          </div> -->
+          <!--/ Paper video. -->
+        </div>
+      </section>
+
+    <section class="section">
+        <div class="container is-max-desktop">
+            <div class="container is-max-desktop">
+                <div class="hero-body">
+                    <h2 class="title is-4">Method Overview</h2>
+                    <img src="./static/images/method.png" height="150%" />
+                      <p>
+                        LEMON pipeline. Initially, it takes modality-specific backbones to extract respective features F<sub>h</sub>, F<sub>o</sub>, F<sub>i</sub>, which are then
+                        utilized to excavate intention features (<span class="overline">T</span><sub>o</sub>, <span class="overline">T</span><sub>h</sub>) of the interaction. With <span class="overline">T</span><sub>o</sub>, <span class="overline">T</span><sub>h</sub> as conditions, LEMON integrates curvatures
+                        (C<sub>o</sub>, C<sub>h</sub>) to model geometric correlations and reveal the contact ϕ<sub>c</sub>, affordance ϕ<sub>a</sub> features. Following, the ϕ<sub>c</sub> is injected into
+                        the calculation of the object spatial feature ϕ<sub>p</sub>. Eventually, the decoder projects ϕ<sub>c</sub>, ϕ<sub>a</sub>, ϕ<sub>p</sub> to the final outputs.
+                      </p>
+                </div>
+            </div>
+
+            <div class="container is-max-desktop">
+                <div class="hero-body">
+                    <h2 class="title is-4">3DIR Dataset</h2>
+                    <img src="./static/images/dataset.png" height="150%" />
+                      <p>
+                        3DIR Dataset. (a) The quantity of images and point clouds for each object, and a data sample containing the image, mask,
+                        dense human contact annotation, 3D object with affordance annotation, and the fitted human mesh with the object proxy sphere. (b) The
+                        proportion of our contact annotations within 24 parts on SMPL [39], and distributions of contact vertices for certain HOIs. (c) The ratio
+                        of annotated affordance regions to the whole object geometries, and the distribution of this ratio for some categories. (d) Mean distances
+                        (unit: m) between annotated object centers and human pelvis joints, and directional projections of annotated centers for several objects.
+                      </p>
+                </div>
+            </div>
+            
+            <div class="container is-max-desktop">
+                <div class="hero-body">
+                    <h2 class="title is-4">Experiment Results</h2>
+                    <img src="./static/images/compare_results.png" height="150%" />
+                      <p>
+                        Compare with SOTA methods which estimate each Interaction element in isolation. (a) Results of the estimated human vertices in contact with objects, the estimated contact vertices are
+                        shown in <span style="color: rgb(224.4,209.1,91.8);">yellow</span> . (b) The anticipations of 3D object affordance, the depth of <span style="color: rgb(255.0,0.0,0.0);">red</span>  represents the probability of anticipated affordance. (c)
+                        Two views of the predicted spatial relation, translucent spheres are object proxies.
+                      </p>
+                    <img src="./static/images/behave_unseen.png" height="150%" />
+                      <p>
+                        Train LEMON on 3DIR dataset and infer on the <b>unseen</b> BEHAVE dataset, including human contact, object affordance, and human-object spatial relation.
+                      </p>
+                    <img src="./static/images/multi_interaction.png" height="100%" />
+                      <p style="text-align: center">
+                        <b>Multiplt Interactions.</b> LEMON anticipates the interaction elements of multiple interactions with the same object.
+                      </p>
+                    <img src="./static/images/multi_obj.png" height="100%" />
+                      <p style="text-align: center">
+                        <b>Multiplt Objects.</b> LEMON could anticipate distinct results according to the interacting object.
+                      </p>
+                </div>
+            </div>
+
+            <!--
+            <div class="columns is-centered has-text-centered">
+                <div class="column is-four-fifths">
+                    <h2 class="title is-3">Method Overview</h2>
+                </div>
+            </div>
+            <section class="hero teaser">
+                <div class="container is-max-desktop">
+                    <div class="hero-body">
+                        <img src="./static/teaser/overview.jpg"/>
+                    </div>
+                </div>
+            </section>
+            <div class="columns is-centered has-text-centered">
+                <div class="column is-four-fifths">
+                    <div class="content has-text-justified">
+                        <p>Surface features from an input 3D mesh are encoded through a face convolution-based encoder and decoded through a StyleGAN2-inspired decoder to generate textures directly on the surface of the mesh.</p>
+                        <p>To ensure that generated textures are realistic, the textured mesh is differentiably rendered from different view points and is critiqued by two discriminators.</p>
+                        <p>An image discriminator D<sub>I</sub> operates on full image views from the real or rendered views, while a patch-consistency discriminator D<sub>P</sub> encourages consistency between views by operating on patches coming from a single real view or patches from different views of rendered images.</p>
+                    </div>
+                </div>
+            </div>
+            -->
+    </section>
+
+    <section class="section" id="BibTeX">
+        <div class="container is-max-desktop content">
+          <h2 class="title">BibTeX</h2>
+          <pre><code>@inproceedings{yang2023lemon,
+        author    = {Yang, Yuhang and Zhai, Wei and Luo, Hongchen and Cao, Yang and Zha, Zheng-Jun},
+        title     = {LEMON: Learning 3D Human-Object Interaction Relation from 2D Images},
+        booktitle = {ArXiv},
+        month     = {December},
+        year      = {2023},
+      }</code></pre>
+        </div>
+    </section>
+
+    <footer class="footer">
+        <div class="container">
+          <div class="content has-text-centered">
+            <a class="icon-link"
+               href="">
+              <i class="fas fa-file-pdf"></i>
+            </a>
+            <a class="icon-link" href="" class="external-link" disabled>
+              <i class="fab fa-github"></i>
+            </a>
+          </div>
+          <div class="columns is-centered">
+            <div class="column is-8">
+              <div class="content">
+                <p>
+                  This website is licensed under a <a rel="license"
+                                                      href="http://creativecommons.org/licenses/by-sa/4.0/">Creative
+                  Commons Attribution-ShareAlike 4.0 International License</a>.
+                </p>
+                <p>
+                  Source code mainly borrowed from <a href="https://keunhong.com/">Keunhong Park</a>'s <a
+                                      href="https://nerfies.github.io/">Nerfies website</a>. Please remember to remove the analytics code included in the header of the website which
+                  you do not want on your website. Please contact <a
+                  href="https://yyvhang.github.io">Yuhang Yang</a> for the feedback and questions.
+                </p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </footer>
+
+    <!-- Import maps polyfill -->
+    <!-- Remove this when import maps will be widely supported -->
+    <script
+    async
+    src="skin/custom/unpkg.com_es-module-shims@1.3.6_dist_es-module-shims.js"
+    ></script>
+    
+    <script type="importmap">
+    {
+      "imports": {
+        "three": "./js/three.module.js"
+      }
+    }
+    </script>
+    
+    <script type="module">
+    import * as THREE from "three";
+    
+    import { PLYLoader } from "./js/PLYLoader.js";
+    import { OrbitControls } from "./js/OrbitControls.js";
+    let div_to_scene = {
+      hot1: {
+        color: null,
+      },
+      hot2: {
+        color: null,
+      },
+      hot3: {
+        color: null,
+      },
+      hot4: {
+        color: null,
+      },
+    
+      nat1: {
+        color: null,
+      },
+      nat2: {
+        color: null,
+      },
+      nat3: {
+        color: null,
+      },
+      nat4: {
+        color: null,
+      },
+    
+      damon1: {
+        color: null,
+      },
+      damon1_support: {
+        color: null,
+      },
+      damon2: {
+        color: null,
+      },
+      damon2_support: {
+        color: null,
+      },
+      damon3: {
+        color: null,
+      },
+      damon3_support: {
+        color: null,
+      },
+      damon4: {
+        color: null,
+      },
+      damon4_support: {
+        color: null,
+      }
+    };
+    let mouse_button_down = false;
+    let list_of_orbit_controls = [];
+    
+    function setup_camera(div_name) {
+      let container = document.getElementById(div_name);
+      let width = container.parentElement.clientWidth;
+      let height = container.parentElement.clientHeight;
+      console.log(width, height);
+      let camera = new THREE.PerspectiveCamera(35, width / height, 0.1, 50);
+      let camera_init_position = new THREE.Vector3(0, 0, 2.2);
+      camera_init_position = camera_init_position.multiplyScalar(1.5);
+      camera.position.set(
+        camera_init_position.x,
+        camera_init_position.y,
+        camera_init_position.z
+      );
+      return camera;
+    }
+    
+    function setup_render_divs(div_name, mesh_path) {
+      let camera = setup_camera(div_name);
+      let orbit_control = create_render_div(camera, div_name, mesh_path);
+      list_of_orbit_controls.push(orbit_control);
+    }
+    
+    function create_render_div(camera, div_id, mesh_path) {
+      let container;
+      let renderer, controls;
+    
+      init();
+      animate();
+    
+      function init() {
+        container = document.getElementById(div_id);
+        let width = container.parentElement.clientWidth;
+        let height = container.parentElement.clientHeight;
+    
+        div_to_scene[div_id]["color"] = new THREE.Scene();
+        div_to_scene[div_id]["color"].background = new THREE.Color( 0xffffff );
+    
+        // PLY file
+    
+        const loader = new PLYLoader();
+        loader.load(mesh_path, function (geometry) {
+            geometry.computeVertexNormals();
+            let material_color = new THREE.MeshPhongMaterial( { 
+              color: 0xcce6ff, 
+              vertexColors: THREE.VertexColors,
+              specular: 0x222222,
+              shininess: 10,
+            });
+    
+            const mesh_color = new THREE.Mesh(geometry, material_color);
+            div_to_scene[div_id]["color"].add(mesh_color);
+          },
+          (xhr) => {
+            console.log((xhr.loaded / xhr.total) * 100 + "% loaded");
+          },
+          (error) => {
+            console.log(error);
+          }
+        );
+    
+        // lights
+    
+        add_lights(div_to_scene[div_id]["color"]);
+    
+        // renderer
+    
+        renderer = new THREE.WebGLRenderer({ antialias: true });
+        renderer.setPixelRatio(window.devicePixelRatio);
+        renderer.setSize(width, height);
+        renderer.outputEncoding = THREE.sRGBEncoding;
+    
+        container.appendChild(renderer.domElement);
+    
+        controls = new OrbitControls(camera, renderer.domElement);
+        controls.enableDamping = false;
+        controls.autoRotate = true;
+    
+        // resize
+    
+        window.addEventListener("resize", onWindowResize);
+        controls.addEventListener("start", function () {
+          controls.autoRotate = false;
+        });
+      }
+      function onWindowResize() {
+        let width = container.clientWidth;
+        let height = container.clientHeight;
+        camera.aspect = width / height;
+        camera.updateProjectionMatrix();
+        renderer.setSize(width, height);
+      }
+      function animate() {
+        requestAnimationFrame(animate);
+        controls.update();
+        render();
+      }
+    
+      function render() {
+        renderer.render( div_to_scene[div_id]["color"], camera );
+        controls.update();
+      }
+    
+      return controls;
+    }
+    
+    function add_lights(scene) {
+      scene.add(new THREE.HemisphereLight(0x443333, 0x111122, 0.05));
+      const spotLight = new THREE.SpotLight(0xffffff, 0.5);
+      spotLight.position.set(0.0, 0.5, 1);
+      const spotLight2 = new THREE.SpotLight(0xffffff, 0.25);
+      spotLight2.position.set(-2, 0.3, -0.2);
+      const spotLight3 = new THREE.SpotLight(0xffffff, 0.25);
+      spotLight3.position.set(2, -0.3, 0.2);
+      const spotLight4 = new THREE.SpotLight(0xffffff, 0.25);
+      spotLight4.position.set(0.0, 1, -2);
+      const spotLight5 = new THREE.SpotLight(0xffffff, 0.05);
+      spotLight5.position.set(0, -2.5, -1);
+      spotLight.position.multiplyScalar(10);
+      scene.add(spotLight);
+      scene.add(spotLight2);
+      scene.add(spotLight3);
+      scene.add(spotLight4);
+      scene.add(spotLight5);
+    }
+    
+    document.addEventListener("keydown", logKey);
+    
+    function logKey(evt) {
+      if (evt.keyCode === 82 && !mouse_button_down) {
+        reset_orbit_controls();
+      }
+    }
+    
+    function reset_orbit_controls() {
+      list_of_orbit_controls.forEach((oc) => {
+        oc.reset();
+        oc.autoRotate = false;
+      });
+    }
+    
+    document.body.onmousedown = function (evt) {
+      if (evt.button === 0) mouse_button_down = true;
+    };
+    document.body.onmouseup = function (evt) {
+      if (evt.button === 0) mouse_button_down = false;
+    };
+    
+    window.onload = function () {
+      let slider = document.getElementsByClassName("slider")[0];
+      slider.removeAttribute("tabIndex");
+      setup_render_divs(
+        "hot1",
+        "./static/plys/Carry_Backpack_01.ply"
+      );
+      setup_render_divs(
+        "hot2",
+        "./static/plys/bag_aff.ply"
+      );
+      setup_render_divs(
+        "hot3",
+        "./models/hot/deco_vcoco_000000537864.ply"
+      );
+      setup_render_divs(
+        "hot4",
+        "./models/hot/deco_vcoco_000000576589.ply"
+      );
+    
+      setup_render_divs(
+        "nat1",
+        "./models/internet_yoga/pexels-photo-207569.ply"
+      );
+      setup_render_divs(
+        "nat2",
+        "./models/internet_yoga/pexels-photo-3622517.ply"
+      );
+      setup_render_divs(
+        "nat3",
+        "./models/internet_yoga/pexels-photo-15732209.ply"
+      );
+      setup_render_divs(
+        "nat4",
+        "./models/internet_yoga/213.ply"
+      );
+    
+      setup_render_divs(
+        "damon1",
+        "./models/damon/hake_train2015_HICO_train2015_00000082.ply"
+      );
+      setup_render_divs(
+        "damon1_support",
+        "./models/damon/hake_train2015_HICO_train2015_00000082_support.ply"
+      );
+      setup_render_divs(
+        "damon2",
+        "./models/damon/vcoco_000000350231.ply"
+      );
+      setup_render_divs(
+        "damon2_support",
+        "./models/damon/vcoco_000000350231_support.ply"
+      );
+      setup_render_divs(
+        "damon3",
+        "./models/damon/vcoco_000000420649.ply"
+      );
+      setup_render_divs(
+        "damon3_support",
+        "./models/damon/vcoco_000000420649_support.ply"
+      );
+      setup_render_divs(
+        "damon4",
+        "./models/damon/vcoco_000000577928.ply"
+      );
+      setup_render_divs(
+        "damon4_support",
+        "./models/damon/vcoco_000000577928_support.ply"
+      );
+    };
+    </script>
+</body>
+
+</html>
