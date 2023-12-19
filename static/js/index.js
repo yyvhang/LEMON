@@ -53,6 +53,16 @@ $(document).ready(function() {
 			autoplay: false,
 			autoplaySpeed: 3000,
     }
+    // let options = {
+    //   slidesToScroll: 1,
+    //   slidesToShow: 4,
+    //   loop: true,
+    //   infinite: true,
+    //   pagination: true,
+    //   autoplay: true,
+    //   autoplaySpeed: 4000,
+    // }
+  
 
 		// Initialize all div with carousel class
     let carousels = bulmaCarousel.attach('.carousel', options);
